@@ -31,3 +31,11 @@ jobs:
 
       - name: Run Tests
         run: mvn test
+      - name: Build Spring Boot JAR
+        run: mvn clean package -DskipTests
+
+      - name: Stop existing app (if running)
+        run: pkill -f "java -jar" || true
+
+      - name: Run Spring Boot Application
+        run: nohup java -jar target/*.jar > app.log 2>&1 &
