@@ -1,10 +1,8 @@
-name: Spring Boot CI/CD Pipeline
+name: Spring Boot Docker CI/CD
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -26,16 +24,17 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
-      - name: Build with Maven
-        run: mvn clean install -DskipTests
-
-      - name: Run Tests
-        run: mvn test
-      - name: Build Spring Boot JAR
+      - name: Build JAR with Maven
         run: mvn clean package -DskipTests
 
-      - name: Stop existing app (if running)
-        run: pkill -f "java -jar" || true
+      - name: Build Docker Image
+        run: docker build -t dbhere-app .
 
-      - name: Run Spring Boot Application
-        run: nohup java -jar target/*.jar > app.log 2>&1 &
+      - name: Stop old container
+        run: docker stop dbhere || true
+
+      - name: Remove old container
+        run: docker rm dbhere || true
+
+      - name: Run new container
+        run: docker run -d -p 8080:8080 --name dbhere dbhere-app
