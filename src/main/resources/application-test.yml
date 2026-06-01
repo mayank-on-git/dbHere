@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ihs
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+server:
+  port: 8082
