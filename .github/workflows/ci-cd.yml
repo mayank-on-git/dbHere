@@ -2,13 +2,14 @@ name: Spring Boot CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: self-hosted
+
     env:
       ENV: dev
 
@@ -41,4 +42,10 @@ jobs:
         run: docker rm dbhere || true
 
       - name: Run new container
-        run: docker run -d -p 8080:8080 --name dbhere dbhere-app
+        run: |
+          docker run -d \
+            -p 8080:8080 \
+            --name dbhere \
+            --restart unless-stopped \
+            -e SPRING_PROFILES_ACTIVE=${ENV} \
+            dbhere-app
