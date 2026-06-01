@@ -9,5 +9,12 @@ public class test {
         public String test(){
             return"welcome to dbHere";
         }
+
+
+
+    @GetMapping("/change")
+    public String change(){
+        return"welcome to dbHere";
+    }
     }
 
