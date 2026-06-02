@@ -17,7 +17,10 @@ public class test {
         return"welcome to change";
     }
 
-
+    @GetMapping("/step2")
+    public String step2(){
+        return"welcome to step2";
+    }
 
     @GetMapping("/step1")
     public String step1(){
