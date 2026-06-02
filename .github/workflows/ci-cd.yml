@@ -23,21 +23,37 @@ jobs:
           distribution: temurin
           java-version: 17
 
-#      - name: Cache Maven dependencies
-#        uses: actions/cache@v4
-#        with:
-#          path: ~/.m2
-#          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
       - name: Build and Analyze
         run: |
           mvn clean verify sonar:sonar \
             -Dsonar.projectKey=dbHere \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}  
+        
 
-      - name: Deploy using Ansible
+      - name: Build JAR with Maven
+        run: mvn clean package -DskipTests
+
+      - name: Build Docker Image
+        run: docker build -t dbhere-app .
+
+      - name: Stop old container
+        run: docker stop dbhere || true
+
+      - name: Remove old container
+        run: docker rm dbhere || true
+
+      - name: Run new container
         run: |
-          ansible-playbook \
-            -i ansible/inventory/hosts \
-            ansible/playbooks/deploy-dbhere.yml
+          docker run -d \
+            -p 8080:8080 \
+            --name dbhere \
+            --restart unless-stopped \
+            -e SPRING_PROFILES_ACTIVE=${ENV} \
+            dbhere-app
