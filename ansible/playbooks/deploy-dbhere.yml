@@ -21,5 +21,4 @@
         -p 8080:8080 \
         --name dbhere \
         --restart unless-stopped \
-#        -e SPRING_PROFILES_ACTIVE=${ENV} \
         dbhere-app
