@@ -49,11 +49,8 @@ jobs:
       - name: Remove old container
         run: docker rm dbhere || true
 
-      - name: Run new container
+      - name: Deploy using Ansible
         run: |
-          docker run -d \
-            -p 8080:8080 \
-            --name dbhere \
-            --restart unless-stopped \
-            -e SPRING_PROFILES_ACTIVE=${ENV} \
-            dbhere-app
+          ansible-playbook \
+            -i ansible/inventory/hosts \
+            ansible/playbooks/deploy-dbhere.yml
