@@ -14,7 +14,14 @@ public class test {
 
     @GetMapping("/change")
     public String change(){
-        return"welcome to dbHere";
+        return"welcome to change";
+    }
+
+
+
+    @GetMapping("/step1")
+    public String step1(){
+        return"welcome to step1";
     }
     }
 
