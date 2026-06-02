@@ -1,0 +1,24 @@
+---
+- hosts: app-server
+  become: no
+
+  tasks:
+
+    - name: Stop old container
+      shell: docker stop dbhere || true
+
+    - name: Remove old container
+      shell: docker rm dbhere || true
+
+    - name: Build Docker image
+      shell: |
+        cd /home/ubuntu/my_reposiotry/dbHere
+        docker build -t dbhere-app .
+
+    - name: Run container
+      shell: |
+        docker run -d \
+        --name dbhere \
+        -p 8080:8080 \
+        --restart unless-stopped \
+        dbhere-app
