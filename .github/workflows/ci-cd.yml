@@ -11,7 +11,7 @@ jobs:
     runs-on: self-hosted
 
     env:
-      ENV: test
+      ENV: prod
 
     steps:
       - name: Checkout code
@@ -39,15 +39,6 @@ jobs:
 
       - name: Build JAR with Maven
         run: mvn clean package -DskipTests
-
-      - name: Build Docker Image
-        run: docker build -t dbhere-app .
-
-      - name: Stop old container
-        run: docker stop dbhere || true
-
-      - name: Remove old container
-        run: docker rm dbhere || true
 
       - name: Deploy using Ansible
         run: |
